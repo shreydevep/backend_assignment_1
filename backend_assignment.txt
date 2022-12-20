@@ -1,1 +1,1 @@
-This is a backend assisgnment for a startup company for the screening round.
+This is a backend assignment for a startup company for the screening round.
