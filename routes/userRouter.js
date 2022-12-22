@@ -1,6 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const Student = require("../models/studentModel")
+const User = require("../models/userModel")
 
 const router = express.Router()
 /**
@@ -14,8 +14,8 @@ const router = express.Router()
 router.route('/')
     .get(async (req, res, next) => {
         try {
-            const students_list = await Student.find()
-            res.status(200).json({ status: "success", results: students_list.length, data: { students_list } })
+            const users_list = await user.find()
+            res.status(200).json({ status: "success", results: users_list.length, data: { users_list } })
 
         } catch (err) {
             res.status(404).json({
@@ -26,11 +26,12 @@ router.route('/')
     })
     .post(async (req, res) => {
         try {
-            const newStudent = await Student.create({ ...req.body })
+            const hashedPassword = await bcrypt.hash(req.body.password, 5)
+            const newUser = await User.create({ ...req.body, password: hashedPassword })
             res.status(201).json({
                 status: 'success',
                 data: {
-                    student: newStudent
+                    user: newUser
                 }
             })
         }
@@ -46,8 +47,8 @@ router
     .route('/:id')
     .get(async (req, res, next) => {
         try {
-            const student = await Student.findById("63a1776769ac3004a51f5be0")
-            res.status(200).json({ status: "success", data: student })
+            const user = await User.find().where("userId").equals(req.params.id)
+            res.status(200).json({ status: "success", data: user })
         } catch (err) {
             res.status(404).json({
                 status: 'fail',
